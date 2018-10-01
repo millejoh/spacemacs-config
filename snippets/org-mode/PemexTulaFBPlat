@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Tula FB Platforming Data Review
+# key: PemexTulaFBPlat
+# --
+#+BEGIN_SRC ein :session 8888/PemexTula/FB Platforming Data Reviews.ipynb :eval no-export :exports none
+#+END_SRC
