@@ -46,7 +46,7 @@ Each entry is either:
     - :excluded (t or nil): Prevent the package from being loaded
       if value is non-nil
 
-    - :location Specify a custom installation location.
+    - :location: Specify a custom installation location.
       The following values are legal:
 
       - The symbol `elpa' (default) means PACKAGE will be
