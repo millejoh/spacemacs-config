@@ -1,12 +1,7 @@
 ;;; list-callers.el --- Find the callers of a Lisp function
-<<<<<<< HEAD
-;; 
-;; Copyright (C) 2004  Helmut Eller
-=======
 ;;
 ;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012,
 ;; 2013 Helmut Eller
->>>>>>> 8ce10638b66d53f09213ea868cf6dce41177f038
 ;;
 ;; You can redistribute this file under the terms of the GNU General
 ;; Public License.
@@ -14,17 +9,6 @@
 
 ;;; Commentary:
 ;;
-<<<<<<< HEAD
-;; This is a little tool to find the callers of a Lisp function.
-;; Position point over an interesting function name and call it with
-;; `M-x list-callers'.  This pops you in a window with a list of the
-;; callers of that function.
-;;
-;; The tool grovels through all named function objects to see if the
-;; function references the symbol.  It is only a heuristic, but works
-;; good enough for simple cases.  Things may get slow if your Emacs
-;; image is really large and contains huge interlinked objects.
-=======
 ;; This is a little tool to find the callers of a Lisp function.  To
 ;; see how it work position point over an interesting function name
 ;; and type `M-x list-callers'.  This pops you in a window with a list
@@ -40,7 +24,6 @@
 ;; the function references the symbol.  It's only a heuristic, but
 ;; works good enough for simple cases.  Things may get slow if your
 ;; Emacs image is very large and contains huge interlinked objects.
->>>>>>> 8ce10638b66d53f09213ea868cf6dce41177f038
 ;;
 ;; The code should work with GNU Emacs 20 and Emacs 21.  XEmacs is not
 ;; supported.
@@ -54,79 +37,17 @@
 
 ;;; Code:
 
-<<<<<<< HEAD
-(eval-and-compile
-  (require 'cl)
-  (require 'find-func))
-=======
 (require 'xref)
 
 (defvar lc-seen-nodes '()
   "Internal variable used to detect cycles.")
 (defvar lc-callees '()
   "Internal variable used to maintain the result list.")
->>>>>>> 8ce10638b66d53f09213ea868cf6dce41177f038
 
 (defsubst lc-byte-code-constants (bytecode)
   "Access the constant vector of the bytecode-function BYTECODE."
   (aref bytecode 2))
 
-<<<<<<< HEAD
-(defun lc-references-symbol-p (object symbol seen-nodes)
-  "Test if OBJECT contains a reference to SYMBOL.
-SEEN-NODES is used to detect cycles."
-  (if (memq object seen-nodes)
-      nil
-    (push object seen-nodes)
-    (etypecase object
-      (symbol
-       (eq object symbol))
-      (cons
-       (let ((flag nil))
-	 ;; iterate over lists to save stack space
-	 (while (and (not flag)
-		     (consp object))
-	   (setq flag (lc-references-symbol-p (car object) symbol seen-nodes))
-	   (setq object (cdr object))
-	   (cond ((memq object seen-nodes)
-		  (setq object nil))
-		 (t
-		  (push object seen-nodes))))
-	 (or flag
-	     (lc-references-symbol-p object symbol seen-nodes))))
-      ((or number string bool-vector char-table buffer frame subr)
-       nil)
-      (vector
-       (loop for elt across object
-	     thereis (lc-references-symbol-p elt symbol seen-nodes)))
-      (byte-code-function
-       (lc-references-symbol-p (lc-byte-code-constants object)
-			       symbol seen-nodes)))))
-
-(defun lc-find-referrers (symbol)
-  "Return a list of all named functions referring SYMBOL."
-  (check-type symbol symbol)
-  (let ((referrers '()))
-    (mapatoms (lambda (atom)
-		(when (and (fboundp atom)
-			   (lc-references-symbol-p (symbol-function atom)
-						   symbol '()))
-		  (push atom referrers))))
-    referrers))
-
-(defun lc-find-function-at-point-other-window ()
-  "Display the source of the function at point in other window."
-  (interactive)
-  (destructuring-bind (buffer &rest point)
-      (find-function-noselect (function-at-point))
-    (with-current-buffer buffer
-      (goto-char point)
-      (save-selected-window
-	(let ((win (display-buffer buffer t)))
-	  (set-window-point win (point))
-	  (select-window win)
-	  (recenter 3))))))
-=======
 (defsubst lc-node-seen-p (node seen-nodes)
   "Return t if NODE exists in the SEEN-NODES list."
   (memq node seen-nodes))
@@ -242,31 +163,10 @@ Each SYMBOL has the string PACKAGE as prefix."
 
 
 ;;; User interface code
->>>>>>> 8ce10638b66d53f09213ea868cf6dce41177f038
 
 (defvar lc-old-window-config nil
   "Buffer local variable use to restore the window configuration.")
 
-<<<<<<< HEAD
-(defun lc-display-callers (callers)
-  "Display a buffer to browse a list of CALLERS."
-  (with-current-buffer (get-buffer-create "*callers*")
-    (setq buffer-read-only nil)
-    (erase-buffer)
-    (set (make-local-variable 'lc-old-window-config)
-	 (current-window-configuration))
-    (let ((keymap (make-sparse-keymap)))
-      (define-key keymap [return] 'lc-find-function-at-point-other-window)
-      (define-key keymap (kbd "RET") 'lc-find-function-at-point-other-window)
-      (define-key keymap [?q] 'lc-quit)
-      (use-local-map keymap)
-      (dolist (symbol callers)
-	(let ((start (point)))
-	  (insert (symbol-name symbol) "\n")))
-      (goto-char (point-min))
-      (setq buffer-read-only t)
-      (select-window (display-buffer (current-buffer))))))
-=======
 (defun lc-find-function-at-point-other-window (name)
   "Display the source of the function-at-point (NAME) in other window."
   (interactive (list (thing-at-point 'symbol)))
@@ -307,7 +207,6 @@ Each SYMBOL has the string PACKAGE as prefix."
     (goto-char (point-min))
     (setq buffer-read-only t)
     (select-window (display-buffer (current-buffer)))))
->>>>>>> 8ce10638b66d53f09213ea868cf6dce41177f038
 
 (defun lc-quit ()
   "Kill the *callers* buffer and restore the window configuration."
@@ -316,16 +215,6 @@ Each SYMBOL has the string PACKAGE as prefix."
     (set-window-configuration lc-old-window-config)
     (kill-buffer buffer)))
 
-<<<<<<< HEAD
-(defun lc-read-function-name ()
-  "Read a function name much like C-h f does.  Return a symbol."
-  (let* ((default (function-called-at-point))
-	 (string (completing-read
-		  (cond (default
-			  (format "Function (default %s): " default))
-			(t "Function: "))
-		  obarray 'fboundp t nil nil (symbol-name default))))
-=======
 (defun lc-function-kind (symbol)
   "Return a symbol describing the kind of function with name SYMBOL."
   (let ((fun (symbol-function symbol)))
@@ -380,32 +269,16 @@ SUMMARY should be a list returned by `lc-package-summary'."
                           (format "List callers (default %s): " default))
                         (t "List callers: "))
                   obarray nil nil nil nil (symbol-name default))))
->>>>>>> 8ce10638b66d53f09213ea868cf6dce41177f038
     (when (equal string "")
       (error "No function name specified"))
     (intern string)))
 
-<<<<<<< HEAD
-=======
 ;;;###autoload
->>>>>>> 8ce10638b66d53f09213ea868cf6dce41177f038
 (defun list-callers (symbol)
   "List the callers of the function at point.
 If called non-interactively display the callers of SYMBOL."
   (interactive (list (lc-read-function-name)))
   (cond ((or (not symbol)
-<<<<<<< HEAD
-	     (not (symbolp symbol)))
-	 (error "Bad argument: %S" symbol))
-	(t
-	 (let* ((referrers (lc-find-referrers symbol))
-		(referrers (sort referrers #'string<)))
-	   (lc-display-callers referrers)))))
-
-(mapc #'byte-compile
-      '(lc-references-symbol-p
-	lc-find-referrers))
-=======
              (not (symbolp symbol)))
          (error "Bad argument: %S" symbol))
         (t
@@ -418,7 +291,6 @@ If called non-interactively display the callers of SYMBOL."
         '(lc-collect-callees-guts
           lc-callees-rlookup
           lc-build-callees-table)))
->>>>>>> 8ce10638b66d53f09213ea868cf6dce41177f038
 
 (provide 'list-callers)
 
