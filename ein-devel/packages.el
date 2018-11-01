@@ -64,7 +64,8 @@ Each entry is either:
 ;;     :modes ein:notebook-mode))
 
 (defun ein-devel/pre-init-emacs-ipython-notebook ()
-  (add-to-list 'load-path "~/.emacs.d/private/ein-devel/local/emacs-ipython-notebook/lisp"))
+  (add-to-list 'load-path "~/.emacs.d/private/ein-devel/local/emacs-ipython-notebook/lisp")
+  (require 'ein))
 
 (defun ein-devel/init-emacs-ipython-notebook ()
   (use-package ein
@@ -72,7 +73,6 @@ Each entry is either:
     :commands (ein:notebooklist-open ein:notebooklist-login ein:jupyter-server-start ein:jupyter-server-stop)
     :init
     (progn
-      (require 'ein-jupyter)
       (spacemacs/set-leader-keys
         "ayl" 'ein:notebooklist-login
         "ayo" 'ein:notebooklist-open
