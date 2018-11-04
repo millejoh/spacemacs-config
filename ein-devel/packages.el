@@ -30,7 +30,14 @@
 ;;; Code:
 
 (defconst ein-devel-packages
-  '((emacs-ipython-notebook :location local))
+  '(websocket
+    request
+    deferred
+    request-deferred
+    dash
+    s
+    skewer-mode
+    (emacs-ipython-notebook :location local))
   "The list of Lisp packages required by the ein-devel layer.
 
 Each entry is either:
