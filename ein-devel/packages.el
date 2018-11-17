@@ -70,6 +70,27 @@ Each entry is either:
 ;;     :backends ein:company-backend
 ;;     :modes ein:notebook-mode))
 
+(defun ein-devel/init-websocket ()
+  )
+
+;; (defun ein-devel/init-request ()
+;;   )
+
+(defun ein-devel/init-deferred ()
+  )
+
+(defun ein-devel/init-request-deferred ()
+  )
+
+(defun ein-devel/init-dash ()
+  )
+
+(defun ein-devel/init-s ()
+  )
+
+;; (defun ein-devel/init-skewer-mode ()
+;;   )
+
 (defun ein-devel/pre-init-emacs-ipython-notebook ()
   (add-to-list 'load-path "~/.emacs.d/private/ein-devel/local/emacs-ipython-notebook/lisp")
   (require 'ein))
