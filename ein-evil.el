@@ -1,21 +1,27 @@
 (use-package ein
   :defer t
-  :commands (ein:notebooklist-open ein:notebooklist-login ein:jupyter-server-start)
+  :commands (ein:run ein:login)
+  :load-path "~/github/emacs-ipython-notebook/lisp"
   :init
   (progn
     (spacemacs/set-leader-keys
-      "ayl" 'ein:notebooklist-login
-      "ayo" 'ein:notebooklist-open
-      "ays" 'ein:jupyter-server-start
-      "ayd" 'ein:jupyter-server-stop)
+      "ayl" 'ein:login
+      "ayr" 'ein:run
+      "ayd" 'ein:stop)
+    )
+  :config
+  (progn
     (with-eval-after-load 'ein-notebooklist
       (evilified-state-evilify-map ein:notebooklist-mode-map
         :mode ein:notebooklist-mode
         :bindings
         (kbd "o") 'spacemacs/ace-buffer-links)
-      (define-key ein:notebooklist-mode-map "o" 'spacemacs/ace-buffer-links)))
-  :config
-  (progn
+      (define-key ein:notebooklist-mode-map "o" 'spacemacs/ace-buffer-links))
+
+    (global-set-key "\C-c\C-j" 'ein:notebook-jump-to-opened-notebook)
+
+    (require 'ein-dev)
+
     (defun spacemacs/ein:worksheet-merge-cell-next ()
       (interactive)
       (ein:worksheet-merge-cell (ein:worksheet--get-ws-or-error) (ein:worksheet-get-current-cell) t t))
@@ -25,7 +31,7 @@
           (concat dotspacemacs-major-mode-leader-key key)
         (concat "," key)))
 
-    (spacemacs/set-leader-keys-for-major-mode 'ein:notebook-multilang-mode
+    (spacemacs/set-leader-keys-for-minor-mode 'ein:notebook
       "y" 'ein:worksheet-copy-cell
       "p" 'ein:worksheet-yank-cell
       "d" 'ein:worksheet-kill-cell
@@ -110,7 +116,7 @@
  [_y_/_p_/_d_]   copy/paste           ^^^^                           [_x_]^^         close notebook
  [_u_]^^^^       change type          ^^^^                           [_q_]^^         quit transient-state
  [_RET_]^^^^     execute"
-      :evil-leader-for-mode (ein:notebook-multilang-mode . ".")
+      :evil-leader-for-mode (ein:notebook . ".")
       :bindings
       ("q" nil :exit t)
       ("?" spacemacs//ein-devel-ms-toggle-doc)
