@@ -23,6 +23,7 @@
     (require 'ein)
     (require 'ein-jupyter)
     (require 'ob-ein)
+    (reqire 'ein-dev)
 
     (defun spacemacs/ein:worksheet-merge-cell-next ()
       (interactive)
