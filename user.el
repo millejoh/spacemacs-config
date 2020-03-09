@@ -9,6 +9,12 @@
 ;;   (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 ;;   (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
 
+;;; ein-kernel-utils
+(use-package ein-kernel-utils
+  :load-path "/Users/mille/Documents/github/ein-kernel-utils/lisp"
+  :init
+  (add-hook 'ein:on-kernel-connect-functions #'ein:enable-company-kernel-completion))
+
 ;;; Useful commands for windows
 (defun copy-for-ccm (start end)
   (interactive
@@ -141,3 +147,13 @@
 (put 'rlet 'common-lisp-indent-function '((&whole 4 &rest (&whole 1 1 2)) &body))
 (put 'create-schema 'common-lisp-indent-function '(6 (&whole 2 $rest 1)))
 (put 'define-method 'common-lisp-indent-function 'lisp-indent-defmethod)
+
+;;; Fun stuff
+
+(defun sutra-spinner ()
+  (interactive)
+  (case (1+ (random 4))
+    (1 (message "Read sutra 1.%s" (1+ (random 51))))
+    (2 (message "Read sutra 2.%s" (1+ (random 55))))
+    (3 (message "Read sutra 3.%s" (1+ (random 56))))
+    (4 (message "Read sutra 4.%s" (1+ (random 34))))))

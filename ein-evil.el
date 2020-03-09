@@ -1,7 +1,7 @@
 (use-package ein
   :defer 60
   :commands (ein:run ein:login)
-  :load-path "/Users/E341194/Documents/github/emacs-ipython-notebook/lisp"
+  :load-path "/Users/mille/Documents/github/emacs-ipython-notebook/lisp"
   :init
   (progn
     (spacemacs/set-leader-keys
@@ -23,7 +23,7 @@
     (require 'ein)
     (require 'ein-jupyter)
     (require 'ob-ein)
-    (reqire 'ein-dev)
+    (require 'ein-dev)
 
     (defun spacemacs/ein:worksheet-merge-cell-next ()
       (interactive)
