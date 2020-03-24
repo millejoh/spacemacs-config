@@ -11,8 +11,9 @@
 
 ;;; ein-kernel-utils
 (use-package ein-kernel-utils
-  :load-path "/Users/mille/Documents/github/ein-kernel-utils/lisp"
-  :init
+  :load-path "/Users/E341194/Documents/github/ein-kernel-utils/lisp"
+  :config
+  (require 'ein-kernel-completion)
   (add-hook 'ein:on-kernel-connect-functions #'ein:enable-company-kernel-completion))
 
 ;;; Useful commands for windows
