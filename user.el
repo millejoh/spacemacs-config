@@ -9,12 +9,6 @@
 ;;   (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 ;;   (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
 
-;;; ein-kernel-utils
-(use-package ein-kernel-utils
-  :load-path "/Users/mille/Documents/github/ein-kernel-utils/lisp"
-  :init
-  (add-hook 'ein:on-kernel-connect-functions #'ein:enable-company-kernel-completion))
-
 ;;; Useful commands for windows
 (defun copy-for-ccm (start end)
   (interactive

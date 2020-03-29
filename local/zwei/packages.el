@@ -15,16 +15,16 @@
   (use-package ein
     :init
     (spacemacs/set-leader-keys "ayl" 'ein:login
-                               "ayr" 'ein:run
-                               "ays" 'ein:stop)
+      "ayr" 'ein:run
+      "ays" 'ein:stop)
     (spacemacs/declare-prefix "ay" "ipython notebook")
     :config
     (mapc
      (lambda (mode)
        (evil-define-minor-mode-key
-	mode 'ein:notebook-mode
-	(kbd "<C-return>") 'ein:worksheet-execute-cell-km
-	(kbd "<S-return>") 'ein:worksheet-execute-cell-and-goto-next-km))
+	       mode 'ein:notebook-mode
+	       (kbd "<C-return>") 'ein:worksheet-execute-cell-km
+	       (kbd "<S-return>") 'ein:worksheet-execute-cell-and-goto-next-km))
      '(insert hybrid normal))
     (with-eval-after-load 'ein-notebook
       (evil-define-key nil ein:notebooklist-mode-map "o" 'spacemacs/ace-buffer-links)
@@ -49,6 +49,8 @@
                         ("fr" ein:notebook-restart-session-command-km)
                         ("C-r" ein:notebook-rename-command-km)
                         ("x" ein:notebook-close-km)
+                        ("gg" ein:kernel-utils-jump-to-source)
+                        ("hh" ein:kernel-utils-request-tooltip-or-help)
                         ("z" ein:notebook-kernel-interrupt-command-km))))
         (apply #'spacemacs/set-leader-keys-for-minor-mode
                (quote ein:notebook-mode)
@@ -61,23 +63,36 @@
                        'warn (format "ipython-notebook/init-ein: undefined %s")))))
                 (copy-tree bindings)))
         (eval (append '(spacemacs|define-transient-state
-			ipython-notebook
-			:title "iPython Notebook Transient State"
-			:bindings
-			("q" nil :exit t))
+			                     ipython-notebook
+			                   :title "iPython Notebook Transient State"
+			                   :bindings
+			                   ("q" nil :exit t))
                       bindings))))))
 
 (defun zwei/post-init-ein ()
   (use-package ein-kernel-utils
-    :load-path "~/github/ein-kernel-utils/lisp"
+    :load-path "c:/Users/mille/Documents/github/ein-kernel-utils/lisp/"
     :config
     (require 'ein-kernel-completion)
+    (require 'ein-buffer-connect)
     (add-hook 'ein:notebook-mode-hook #'(lambda () (add-to-list 'company-backends 'ein:company-backend)))
+    (add-hook 'ein:notebook-mode-hook
+              #'(lambda ()
+                  (when (featurep 'eldoc)
+                        (add-function :before-until (local 'eldoc-documentation-function)
+                                      #'ein:completer--get-eldoc-signature)
+                        (eldoc-mode))))
     (add-hook 'ein:on-kernel-connect-functions #'(lambda (kernel)
-                                                   (ein:kernel-utils-load-safely kernel)))))
-
-;; (defun zwei/pre-init-ein ()
-;;   (spacemacs|use-package-add-hook org
-;;     :post-config
-;;     (use-package ob-ipython
-;;       :init (add-to-list 'org-babel-load-languages '(ipython . t)))))
+                                                   (ein:kernel-utils-load-safely kernel)))
+    (add-hook 'org-src-mode-hook #'ein:on-edit-source-block)
+    (add-hook 'python-mode-hook
+              (lambda ()
+                (define-key python-mode-map "\C-c." 'ein:kernel-utils-jump-to-source)
+                (define-key python-mode-map "\C-c\C-h" 'ein:kernel-utils-request-tooltip-or-help)
+                (define-key python-mode-map "\C-c\C-c" 'ein:connect-run-or-eval-buffer)
+                (define-key python-mode-map "\C-c\C-l" 'ein:connect-reload-buffer)
+                (define-key python-mode-map "\C-c\C-r" 'ein:connect-eval-region)
+                (define-key python-mode-map (kbd "C-:") 'ein:shared-output-eval-string)
+                (define-key python-mode-map "\C-c\C-z" 'ein:connect-pop-to-notebook)
+                (define-key python-mode-map "\C-c\C-x" 'ein:tb-show)
+                (define-key python-mode-map (kbd "C-c C-/") 'ein:notebook-scratchsheet-open)))))
