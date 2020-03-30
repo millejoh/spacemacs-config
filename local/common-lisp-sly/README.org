@@ -1,0 +1,170 @@
+#+TITLE: Common Lisp Sly layer
+
+#+BEGIN_SRC text
+          _____    __   __  __
+         / ___/   / /   \ \/ /               |\      _,,,---,,_
+         \__ \   / /     \  /                /,`.-'`'    -.  ;-;;,_
+        ___/ /  / /___   / /                |,4-  ) )-,_..;\ (  `'-'
+       /____/  /_____/  /_/                '---''(_/--'  `-'\_)
+#+END_SRC
+
+* Table of Contents
+- [[#description][Description]]
+  - [[#features][Features]]
+- [[#layer-installation][Layer Installation]]
+- [[#structurally-safe-editing][Structurally safe editing]]
+- [[#key-bindings][Key Bindings]]
+  - [[#help][Help]]
+  - [[#compilation][Compilation]]
+  - [[#evaluation][Evaluation]]
+  - [[#navigation][Navigation]]
+  - [[#macro-expansion][Macro-expansion]]
+  - [[#repl][REPL]]
+  - [[#stickers][Stickers]]
+  - [[#tracing][Tracing]]
+
+* Description
+This layer provides support for Common Lisp to Spacemacs using Sly. This layer should be used
+instead of the =common-lisp= layer if you want to use Sly -- a more featureful Common Lisp
+environment.
+
+** Features
+- Syntax highlighting
+- Fuzzy auto-completion using =company=
+- REPL and introspection support via [[https://github.com/joaotavora/sly][Sly]]
+- Support for specific Lisp navigation styles via =common-lisp-mode=
+- Support for the [[http://www.sbcl.org/][SBCL]] backend or any other Common Lisp implementation
+- Ability to save a layout with a REPL and have it restored the next time that layout is loaded
+- Multiple REPL connections for the same or different Common Lisp images
+- REPLs have full ANSI color code support via [[https://github.com/PuercoPop/sly-repl-ansi-color][sly-repl-ansi-color]]
+- Stickers, a more advanced, non-intrusive alternative to print debugging, and a means for live code
+  annotation.
+
+* Layer Installation
+If you have previously installed SLIME in any other way, it is recommended that you uninstall it
+before proceeding. You should clean up any configuration files tied to SLIME that are left behind as
+well.
+
+To use this configuration layer, add it to your =~/.spacemacs=. You will need to add =common-lisp-sly=
+to the existing =dotspacemacs-configuration-layers= list in this file.
+
+This layer defaults to using [[http://www.sbcl.org/][SBCL]]. If you want to use a different implementation of Common Lisp, you
+can specify it in your =~/.spacemacs=:
+
+#+BEGIN_SRC emacs-lisp
+  (defun dotspacemacs/user-config ()
+    (setq inferior-lisp-program "/path/to/your/lisp"))
+#+END_SRC
+
+* Structurally Safe Editing
+This layer adds support for =evil-cleverparens= which allows safe editing of lisp code by keeping the
+s-expressions balanced.
+
+By default this mode is not activated. You can turn it on locally on the active buffer with ~SPC m T
+s~ (=s= for safe).
+
+To turn it on automatically for all =common-lisp= buffers call the following function in your
+=dotspacemacs/user-config= function:
+
+#+BEGIN_SRC emacs-lisp
+(spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hook-common-lisp-mode)
+#+END_SRC
+
+or to enable it for all supported modes:
+
+#+BEGIN_SRC emacs-lisp
+(spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hooks)
+#+END_SRC
+
+When enabled, the symbol =🆂= should be displayed in the mode line.
+
+* Key Bindings
+** Working with Lisp files (slurpage, barfage, and more)
+Spacemacs comes with a special =lisp-state= for working with Lisp code that supports slurpage, barfage
+and more tools you'll likely want when working with Lisp.
+
+As this state works the same for all files, the documentation is in global [[https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org#lisp-key-bindings][DOCUMENTATION.org]]. In
+general, use ~SPC k~ to interact with =lisp-state=.
+
+** Help
+
+| Key Binding | Description                                               |
+|-------------+-----------------------------------------------------------|
+| ~SPC m h a~   | Apropos - search for any symbol matching input (prompted) |
+| ~SPC m h b~   | Show who binds the global variable at point               |
+| ~SPC m h d~   | Show disassembly of symbol at point                       |
+| ~SPC m h h~   | Describe symbol at point                                  |
+| ~SPC m h H~   | Lookup symbol at point in the Common Lisp HyperSpec       |
+| ~SPC m h m~   | Show the usages of macro at point                         |
+| ~SPC m h p~   | Browse package's exported symbols                         |
+| ~SPC m h r~   | Show who refers to the global variable at point           |
+| ~SPC m h s~   | Show all methods specialized on class symbol at point     |
+| ~SPC m h S~   | Show who sets the global variable at point                |
+| ~SPC m h <~   | Show who calls the function symbol at point               |
+| ~SPC m h >~   | Show all functions called by function symbol at point     |
+
+** Compilation
+
+| Key Binding | Description              |
+|-------------+--------------------------|
+| ~SPC m c c~   | Compile file             |
+| ~SPC m c C~   | Compile and load file    |
+| ~SPC m c f~   | Compile function         |
+| ~SPC m c l~   | Load file                |
+| ~SPC m c n~   | Remove compilation notes |
+| ~SPC m c r~   | Compile region           |
+
+** Evaluation
+
+| Key Binding | Description                                              |
+|-------------+----------------------------------------------------------|
+| ~SPC m e b~   | Evaluate buffer                                          |
+| ~SPC m e e~   | Evaluate last s-expression                               |
+| ~SPC m e E~   | Evaluate last s-expression and print result as a comment |
+| ~SPC m e f~   | Evaluate top-level function s-expression                 |
+| ~SPC m e F~   | Undefine the function at point                           |
+| ~SPC m e r~   | Evaluate region                                          |
+
+** Navigation
+
+| Key Binding | Description                          |
+|-------------+--------------------------------------|
+| ~SPC m g~     | Enter the navigation transient state |
+
+** Macro-expansion
+
+| Key Binding | Description                               |
+|-------------+-------------------------------------------|
+| ~SPC m m e~   | Macro-expand the form at point once       |
+| ~SPC m m E~   | Macro-expand the form at point completely |
+| ~SPC m m s~   | Enter the macrostep transient state       |
+
+** REPL
+
+| Key Binding | Description                                                        |
+|-------------+--------------------------------------------------------------------|
+| ~SPC m s c~   | Clear the REPL                                                     |
+| ~SPC m s i~   | Start a new Common Lisp image                                      |
+| ~SPC m s I~   | Choose a new Common Lisp implementation and start a new image      |
+| ~SPC m s q~   | Quit the REPL, terminating the Common Lisp image                   |
+| ~SPC m s r~   | Restart the Common Lisp image associated with the current REPL     |
+| ~SPC m s s~   | Sync the REPL with the current file buffer's package and directory |
+
+** Stickers
+
+| Key Binding | Description                                                                                 |
+|-------------+---------------------------------------------------------------------------------------------|
+| ~SPC m S b~   | Toggle breaking stickers, to have debugger come up when sticker is reached during execution |
+| ~SPC m S c~   | Clear all stickers for function at point                                                    |
+| ~SPC m S C~   | Clear all stickers for buffer                                                               |
+| ~SPC m S f~   | Fetch recordings for sticker at point                                                       |
+| ~SPC m S r~   | Cycle through the recordings of all stickers                                                |
+| ~SPC m S s~   | Add or remove (if one already exists) sticker at point                                      |
+
+** Tracing
+
+| Key Binding | Description        |
+|-------------+--------------------|
+| ~SPC m t t~   | Toggle trace       |
+| ~SPC m t T~   | Toggle fancy trace |
+| ~SPC m t u~   | Untrace all        |
